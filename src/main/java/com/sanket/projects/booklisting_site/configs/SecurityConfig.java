@@ -81,6 +81,7 @@ public class SecurityConfig
 						.requestMatchers(HttpMethod.POST, "/create-account").permitAll()
 						.requestMatchers(HttpMethod.POST, "/send-otp").permitAll()
 						.requestMatchers(HttpMethod.POST, "/token").permitAll()
+						.requestMatchers("/error").permitAll()
 						.anyRequest().authenticated()
 				)
 				// in built oauth2 resource server to authenticate against
@@ -96,6 +97,7 @@ public class SecurityConfig
 				.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				// no need to basic auth
 //				.httpBasic(Customizer.withDefaults())
+
 				.build();
 	}
 	

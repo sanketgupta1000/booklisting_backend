@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.sanket.projects.booklisting_site.entities.User;
 import com.sanket.projects.booklisting_site.repositories.UserRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class TokenService
@@ -51,7 +52,8 @@ public class TokenService
 	{
 		// first will check if user already exists
 		if (userRepository.findByEmail(user.getEmail()) != null) {
-			return "User already exists.";
+//			return "User already exists.";
+			throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "User already exists.");
 		}
 		
 		// encode password

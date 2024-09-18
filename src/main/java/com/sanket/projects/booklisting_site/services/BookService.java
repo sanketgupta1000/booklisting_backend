@@ -3,6 +3,8 @@ package com.sanket.projects.booklisting_site.services;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +13,7 @@ import com.sanket.projects.booklisting_site.entities.User;
 import com.sanket.projects.booklisting_site.repositories.BookDAO;
 
 import jakarta.transaction.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BookService
@@ -65,7 +68,7 @@ public class BookService
 	    Book book = bookDAO.findById(id);
 		if (book == null)
 		{
-			throw new RuntimeException("Book not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
 		}
 		return book;
 	}
@@ -74,12 +77,13 @@ public class BookService
 	@Transactional
 	public Book updateBook(Book book, User user, MultipartFile coverImage) throws IllegalStateException, IOException
 	{
+//		System.out.println("Image not provided: "+coverImage.isEmpty());
 		// get old book
 		Book oldBook = bookDAO.findById(book.getId());
 		
 		// check if it is user's book
 		if (!oldBook.getAuthor().getEmail().equals(user.getEmail())) {
-			throw new RuntimeException("Cannot update book not created by user");
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot update book not created by user");
 		}
 		
 		// set new title
@@ -125,7 +129,7 @@ public class BookService
 		// check if it is user's book
 		if (!book.getAuthor().getEmail().equals(user.getEmail()))
 		{
-			throw new RuntimeException("Cannot delete book not created by user");
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot delete book not created by user");
 		}
 		
 		// get the image path
